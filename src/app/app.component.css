@@ -1,0 +1,39 @@
+/* Modern pastel navbar theme to match landing page */
+.navbar {
+  background: #fff !important;
+  box-shadow: 0 2px 16px 0 rgba(165,180,252,0.10);
+  border-radius: 1.5rem;
+  margin: 1.5rem auto 2.5rem auto;
+  max-width: 1200px;
+  padding: 0.7rem 2vw;
+  font-family: 'Poppins', 'Inter', 'Roboto', Arial, sans-serif;
+}
+.navbar .navbar-brand {
+  color: #6366f1 !important;
+  font-family: 'Poppins', 'Inter', 'Roboto', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+.navbar .btn, .navbar .btn-outline-light {
+  border-radius: 2em;
+  font-family: 'Poppins', 'Inter', 'Roboto', Arial, sans-serif;
+  font-weight: 600;
+  background: linear-gradient(90deg, #6ee7f7 0%, #a5b4fc 100%);
+  color: #23234c !important;
+  border: none;
+  box-shadow: 0 2px 8px rgba(165,180,252,0.13);
+  transition: background 0.2s, color 0.2s;
+}
+.navbar .btn-outline-light:hover, .navbar .btn:hover {
+  background: linear-gradient(90deg, #a5b4fc 0%, #6ee7f7 100%);
+  color: #23234c !important;
+}
+.navbar .text-white, .navbar .fw-semibold {
+  color: #23234c !important;
+  font-family: 'Poppins', 'Inter', 'Roboto', Arial, sans-serif;
+}
+.navbar .mat-icon {
+  color: #6366f1 !important;
+  vertical-align: middle;
+}

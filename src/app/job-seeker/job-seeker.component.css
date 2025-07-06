@@ -1,0 +1,16 @@
+/* ...existing code... */
+:host ::ng-deep .full-width-dialog .mat-dialog-container {
+    width: 95vw !important;
+    max-width: 98vw !important;
+    margin: 0;
+    padding: 0;
+}
+
+::ng-deep .full-width-dialog{
+    width: 90vw !important;
+    max-width: 100vw !important;
+
+    max-width: 100% !important;
+}
+
+/* ...existing code... */

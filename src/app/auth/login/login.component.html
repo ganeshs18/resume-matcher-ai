@@ -1,0 +1,31 @@
+<div class="d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 72px);">
+  <div class="container" style="max-width: 400px;">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="card-title mb-4 text-center">Login</h4>
+        <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input id="email" type="email" class="form-control" formControlName="email" />
+            <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="text-danger">
+              <div *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</div>
+              <div *ngIf="loginForm.get('email')?.errors?.['email']">Enter a valid email.</div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input id="password" type="password" class="form-control" formControlName="password" />
+            <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="text-danger">
+              <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
+              <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || loading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ loading ? 'Logging in...' : 'Login' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
