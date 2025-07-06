@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
 
@@ -12,7 +12,7 @@ declare var google: any;
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ReactiveFormsModule, FormsModule, CommonModule],
+    imports: [ReactiveFormsModule, FormsModule, CommonModule,RouterModule],
     templateUrl: './login.component.html',
     styleUrl: './login.component.css'
 })

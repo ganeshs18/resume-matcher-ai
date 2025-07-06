@@ -3,7 +3,7 @@ import { AfterViewInit, Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 declare var google: any;
 
@@ -11,7 +11,7 @@ declare var google: any;
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule]
+  imports: [FormsModule, ReactiveFormsModule, CommonModule,RouterModule]
 })
 export class RegisterComponent implements AfterViewInit {
   registerForm: FormGroup;
