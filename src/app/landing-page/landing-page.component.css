@@ -292,60 +292,27 @@
     max-width: 900px;
     margin: 3.5rem auto 0 auto;
     text-align: center;
-    padding: 2.5rem 0 2.5rem 0;
-    background: linear-gradient(90deg, #f3e8ff 0%, #e0e7ff 100%);
-    border-radius: 1.5rem;
-    box-shadow: 0 4px 32px 0 rgba(165,180,252,0.10);
-    position: relative;
   }
   .demo-label {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #6366f1;
-    margin-bottom: 1.1em;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.7em;
     letter-spacing: 0.5px;
-    font-family: 'Poppins', 'Inter', 'Roboto', Arial, sans-serif;
-    text-shadow: 0 2px 8px #f3e8ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.7em;
-  }
-  .demo-label::before {
-    content: "✨";
-    font-size: 1.3em;
-    margin-right: 0.3em;
   }
   .demo-window {
     background: #fff;
-    border-radius: 1.2rem;
-    box-shadow: 0 2px 16px rgba(99,102,241,0.10);
-    padding: 2em 1.5em 1.5em 1.5em;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 8px rgba(37,99,235,0.07);
+    padding: 1.5em 1.2em 1.2em 1.2em;
     margin: 0 auto;
-    max-width: 540px;
+    max-width: 520px;
     min-height: 120px;
-    font-family: 'JetBrains Mono', 'Fira Mono', 'Roboto Mono', 'Roboto', monospace;
-    font-size: 1.08rem;
-    color: #23234c;
+    font-family: 'Roboto Mono', 'Roboto', monospace;
+    font-size: 1.01rem;
+    color: #22223b;
     text-align: left;
     animation: fadeIn 1.2s;
-    border: 1.5px solid #e0e7ff;
-    position: relative;
-  }
-  .demo-window::before {
-    content: "AI Live Preview";
-    position: absolute;
-    top: -1.7em;
-    left: 1.2em;
-    font-size: 0.98rem;
-    color: #a1a1aa;
-    background: #f3e8ff;
-    padding: 0.18em 0.9em;
-    border-radius: 1em;
-    font-family: 'Poppins', 'Inter', 'Roboto', Arial, sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px #e0e7ff;
   }
   .features-section {
     max-width: 1100px;

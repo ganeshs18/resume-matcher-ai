@@ -1,9 +1,17 @@
+<!-- <div id="googleSignInDiv"></div> -->
+
 <div class="d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 72px);">
+
   <div class="container" style="max-width: 400px;">
+
     <div class="card shadow-sm">
       <div class="card-body">
+
         <h4 class="card-title mb-4 text-center">Login</h4>
         <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+          <div *ngIf="loginForm.errors?.['invalid']" class="alert alert-danger py-2 text-center mb-3">
+            Invalid username or password.
+          </div>
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input id="email" type="email" class="form-control" formControlName="email" />
@@ -17,13 +25,32 @@
             <input id="password" type="password" class="form-control" formControlName="password" />
             <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="text-danger">
               <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
-              <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
+              <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.
+              </div>
             </div>
           </div>
+
           <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || loading">
             <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
             {{ loading ? 'Logging in...' : 'Login' }}
           </button>
+
+          <div class="text-center mt-2 mb-1" style="font-size:0.98rem;">
+            Don't have an account?
+            <a routerLink="/register" class="fw-semibold text-primary text-decoration-underline">Register here</a>
+          </div>
+
+          <div class="text-center my-3" style="color:#a1a1aa; font-size:0.98rem;">or</div>
+          <!-- <button (click)="triggerGoogleLogin()" type="button"
+            class="btn w-100 d-flex align-items-center justify-content-center"
+            style="background:#fff; border:1.5px solid #e0e7ff; color:#23234c; font-weight:600; border-radius:2em; box-shadow:0 2px 8px #e0e7ff; font-family:'Poppins','Inter','Roboto',Arial,sans-serif; padding:0.7em 0; margin-bottom:0.2em;">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
+              style="width:1.5em; height:1.5em; margin-right:0.7em; vertical-align:middle;"> Sign in with Google
+          </button> -->
+
+          <div class="d-flex justify-content-center">
+            <div class="btn" id="googleSignInDiv"></div>
+          </div>
         </form>
       </div>
     </div>

@@ -1,8 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ResumeEnhancementService } from '../app/core/services/resume-enhancement.service';
 
 import { NgxEditorComponent, NgxEditorMenuComponent, Editor } from 'ngx-editor';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { LoadingService } from '../app/core/services/loading.service';
 
 @Component({
   selector: 'app-doc-editor',
@@ -12,48 +15,63 @@ import { FormsModule } from '@angular/forms';
 
 })
 export class DocEditorComponent implements OnInit, OnDestroy {
-
-  constructor(private resumeService: ResumeEnhancementService) {
-
-  }
-
   html = '';
   editor!: Editor;
+  blocksFromDB:ResumeBlockDto[]=[];
+  constructor(
+    private resumeService: ResumeEnhancementService,
+    private activatedRouter: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    private loader:LoadingService
+  ) {}
+
+  downloadDoc(): void {
+    // Wrap the HTML in a Word-compatible structure
+    const htmlContent = `<!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Resume</title>
+        <style>
+          body { font-family: 'Poppins', Arial, sans-serif; }
+        </style>
+      </head>
+      <body>${this.html}</body>
+      </html>`;
+    const blob = new Blob([htmlContent], { type: 'application/msword' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'resume.doc';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }, 0);
+  }
+
+
+
   ngOnInit(): void {
     this.editor = new Editor();
+    this.activatedRouter.queryParamMap.subscribe(res=>{
 
-    this.resumeService.loadResumeBlocks(52) .subscribe(blocks => {
-        this.html = convertResumeBlocksToHtml(blocks);
-      });
+    })
+    if(!this.activatedRouter.snapshot.queryParams['resumeId']) return;
+    this.resumeService.loadResumeBlocks(this.activatedRouter.snapshot.queryParams['resumeId']).subscribe(blocks => {
+      this.blocksFromDB = blocks;
+      this.html = this.convertResumeBlocksToHtml(blocks);
+      console.log(this.html)
+      console.log('ai Response : ',this.resumeService.aiResponseObj);
+      this.saveBlockTexts();
+    });
   }
 
-  ngOnDestroy(): void {
-    this.editor.destroy();
-  }
-
-}
-
-
-
-export interface ResumeBlockDto {
-  id: number;
-  blockIndex: number;
-  originalText: string;
-  enhancedText: string | null;
-  font: string;
-  fontSize: number;
-  bold: boolean;
-  italic: boolean;
-  underline: boolean;
-  alignment: string;
-  spacing: number;
-  blockType: string;
-  styleClass: string | null;
-}
-
-export function convertResumeBlocksToHtml(blocks: ResumeBlockDto[]): string {
+  convertResumeBlocksToHtml(blocks: ResumeBlockDto[]): string {
   return blocks.map(block => {
-    const text = escapeHtml(block.enhancedText || block.originalText || '');
+    const enhancedText = this.resumeService.aiResponseObj?.[`block-${block.blockIndex}`] || '';
+    const text = escapeHtml(block.enhancedText || enhancedText || block.originalText || '');
 
     const align = block.alignment || 'left';
     const spacing = block.spacing > 0 ? `line-height: ${block.spacing};` : '';
@@ -90,6 +108,43 @@ export function convertResumeBlocksToHtml(blocks: ResumeBlockDto[]): string {
     }
   }).join('\n');
 }
+
+  ngOnDestroy(): void {
+    this.editor.destroy();
+  }
+
+  saveBlockTexts(){
+    const modifiedBlocks:ResumeBlockDto[] = this.blocksFromDB.filter(el=> !!this.resumeService.aiResponseObj?.[`block-${el.blockIndex}`]).map(el=> {
+      const enhancedText = this.resumeService.aiResponseObj?.[`block-${el.blockIndex}`] ||  '';
+      el.enhancedText = enhancedText;
+      return el;
+    })
+    this.resumeService.saveEnhancedBlockTexts(modifiedBlocks).subscribe(res=>{
+      this.loader.hideAll()
+    });
+  }
+
+}
+
+
+
+export interface ResumeBlockDto {
+  id: number;
+  blockIndex: number;
+  originalText: string;
+  enhancedText: string | null;
+  font: string;
+  fontSize: number;
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  alignment: string;
+  spacing: number;
+  blockType: string;
+  styleClass: string | null;
+}
+
+ 
 
 
 // Escaping HTML for safety

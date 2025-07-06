@@ -1,3 +1,14 @@
+
+
+<div *ngIf="loading$ | async as loading" class="global-loading-overlay" style="position: fixed; z-index: 2000; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255,255,255,0.85); pointer-events: all; display: flex; align-items: center; justify-content: center;">
+  <div class="d-flex flex-column align-items-center justify-content-center w-100 h-100">
+    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="fw-semibold fs-5 text-primary">{{ loadingMessage || 'Loading' }}...</div>
+  </div>
+</div>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 sticky-top">
   <div class="container-fluid d-flex justify-content-between align-items-center">
     <span class="navbar-brand mb-0 h1">Resume Matcher AI <span class="beta-badge">BETA</span></span>
@@ -8,6 +19,7 @@
       <button *ngIf="userName" mat-icon-button class="btn btn-outline-light" (click)="onLogout()" title="Logout">
         <mat-icon>logout</mat-icon>
       </button>
+      <button *ngIf="!userName" class="btn btn-light fw-semibold ms-2" routerLink="/register">Get Started</button>
     </div>
   </div>
 </nav>

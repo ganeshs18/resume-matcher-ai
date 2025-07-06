@@ -1,9 +1,16 @@
-<div class="NgxEditor__Wrapper">
+<div class="NgxEditor__Wrapper" style="border: 1.5px solid #e0e7ff; border-radius: 1rem; box-shadow: 0 2px 12px #e0e7ff; padding: 1.2rem; background: #fff; max-height: 70vh; overflow: auto;">
+  <div class="d-flex justify-content-end mb-2">
+    <button class="btn btn-outline-primary" (click)="downloadDoc()">
+      <span class="me-1">Download as DOC</span>
+            <span style="font-size:1.2em;vertical-align:middle;">&#128229;</span>
+    </button>
+  </div>
   <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
   <ngx-editor
     [editor]="editor"
     [ngModel]="html"
     [disabled]="false"
     [placeholder]="'Type here...'"
+    style="min-height: 80vh; max-height: 90vh; overflow-y: auto; background: #f8fafc; border-radius: 0.7rem; border: 1px solid #e0e7ff;"
   ></ngx-editor>
 </div>

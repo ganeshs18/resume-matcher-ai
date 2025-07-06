@@ -2,14 +2,17 @@ import { Injectable, NgZone } from '@angular/core';
 import { Observable, Subscriber } from 'rxjs';
 import { ResumeBlockDto } from '../../../doc-editor/doc-editor.component';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ResumeEnhancementService {
-  private apiUrl = 'http://localhost:8888/'; // Your Spring Boot endpoint
+ // Your Spring Boot endpoint
   eventSource!: EventSource;
 
+  aiResponseObj: any;
 
-  constructor(private zone: NgZone,private http:HttpClient) { }
+
+  constructor(private zone: NgZone, private http: HttpClient) { }
 
 
 
@@ -61,9 +64,27 @@ export class ResumeEnhancementService {
   }
 
 
- loadResumeBlocks(resumeId: number) {
-  return  this.http.get<ResumeBlockDto[]>(`${this.apiUrl}resume/${resumeId}`)
-     
+  loadResumeBlocks(resumeId: number) {
+    return this.http.get<ResumeBlockDto[]>(`${environment.apiUrl}resume/${resumeId}`)
+
+  }
+
+  getExistingResumes() {
+    let user: any = JSON.parse(localStorage.getItem('user') as any)
+    return this.http.get<ResumeBlockDto[]>(`${environment.apiUrl}resume/resumes/${user.id}`)
+
+  }
+
+  uploadRawFile(file: File, userId: any) {
+    const formData: FormData = new FormData()
+    formData.append('file', file);
+    formData.append('userId', userId);
+
+    return this.http.post<ResumeBlockDto[]>(`${environment.apiUrl}upload`, formData)
+  }
+
+  saveEnhancedBlockTexts(payload: ResumeBlockDto[]) {
+    return this.http.post(`${environment.apiUrl}resume/blocks/enhance`, payload)
   }
 
 
@@ -73,7 +94,7 @@ export interface ResumeEvent {
 
   block: string
   progress: number
-  message:string
+  message: string
   type: 'UPLOAD_START' |
   'UPLOAD_SUCCESS' |
   'PARSING_BLOCKS' |

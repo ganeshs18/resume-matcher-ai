@@ -2,35 +2,52 @@
   <div class="flex-grow-0" style="min-height: 45vh;">
     <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" novalidate>
       <div class="row g-3 align-items-end">
-        <div class="col-md-3">
+        <div class="col-md-4">
           <label for="jobTitle" class="form-label">Job Title <span class="text-danger">*</span></label>
           <input type="text" id="jobTitle" class="form-control" formControlName="jobTitle" required />
-          <div *ngIf="submitted && jobForm.get('jobTitle')?.invalid" class="text-danger small">Job Title is required.</div>
+          <div *ngIf="submitted && jobForm.get('jobTitle')?.errors?.['required']" class="text-danger small">Job Title is required.</div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <label for="company" class="form-label">Company <span class="text-danger">*</span></label>
           <input type="text" id="company" class="form-control" formControlName="company" required />
-          <div *ngIf="submitted && jobForm.get('company')?.invalid" class="text-danger small">Company is required.</div>
+          <div *ngIf="submitted && jobForm.get('company')?.errors?.['required']" class="text-danger small">Company is required.</div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
+          <label for="existingResume" class="form-label">Select Existing Resume</label>
+          <select id="existingResume" class="form-select" formControlName="existingResume">
+            <option value="">Select Resume</option>
+            <option *ngFor="let resume of existingResumes" [value]="resume.oldS3Url">{{resume.fileName}}</option>
+          </select>
+          <div *ngIf="submitted && jobForm.hasError('resumeChoice') && !jobForm.get('existingResume')?.value" class="text-danger small">
+            Please select an existing resume or upload a file.
+          </div>
+        </div>
+        <!-- <div class="col-md-3">
           <label for="jobUrl" class="form-label">Job URL</label>
           <input type="url" id="jobUrl" class="form-control" formControlName="jobUrl" />
-        </div>
-        <div class="col-md-3">
-          <label for="resumeUpload" class="form-label">Upload Resume (PDF, DOC, DOCX only)</label>
-          <input type="file" id="resumeUpload" class="form-control" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple />
+        </div> -->
+        <div class="col-md-6">
+          <label for="resumeUpload" class="form-label">Upload Resume (DOC, DOCX only)</label>
+          <input type="file" id="resumeUpload" class="form-control" (change)="onFileSelected($event)" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"  />
+          <div *ngIf="jobForm.get('file')?.value" class="mt-2">
+            <span class="badge bg-info text-dark">Selected file: {{ jobForm.get('file')?.value?.name }}</span>
+          </div>
           <div *ngIf="fileError" class="text-danger small">{{ fileError }}</div>
+          <div *ngIf="submitted && jobForm.hasError('resumeChoice') && !jobForm.get('file')?.value" class="text-danger small">
+            Please upload a file or select an existing resume.
+          </div>
         </div>
       </div>
       <div class="row mt-3">
         <div class="col-12">
-          <label for="jobDescription" class="form-label">Job Description</label>
+          <label for="jobDescription" class="form-label">Job Description <span class="text-danger">*</span></label>
           <textarea id="jobDescription" class="form-control" formControlName="jobDescription" rows="2"></textarea>
+           <div *ngIf="submitted && jobForm.get('jobDescription')?.errors?.['required']" class="text-danger small">Job Description is required.</div>
         </div>
       </div>
       <div class="row mt-3">
         <div class="col-12">
-          <button type="submit" class="btn btn-primary" [disabled]="jobForm.invalid">Submit</button>
+          <button type="submit" class="btn btn-primary" >Submit</button>
         </div>
       </div>
     </form>

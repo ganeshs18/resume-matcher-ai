@@ -7,6 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ResumeEnhancementService } from '../core/services/resume-enhancement.service';
 import { Observable, Subscriber } from 'rxjs';
+import { getLocalStorage } from '../core/util/local-storage';
+import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
+import { LoadingService } from '../core/services/loading.service';
 
 const ResumeEventTypes = [
   'UPLOAD_START',
@@ -25,7 +29,7 @@ interface UploadedResume {
   company: string;
   file: File;
   atsScore?: number; // Optional ATS score
-
+  existingResume: string
   jobUrl: [''],
   jobDescription: [''],
 
@@ -50,36 +54,9 @@ export class JobSeekerComponent {
   jobForm: FormGroup;
   fileError: string = '';
   submitted: boolean = false;
-  private apiUrl = 'http://localhost:8888/resume/enhance';
-  uploadedResumes: UploadedResume[] = [
-    {
-      name: 'John_Doe_Resume.pdf',
-      jobTitle: 'Software Engineer',
-      company: 'TechCorp',
-      file: new File([], 'John_Doe_Resume.pdf', { type: 'application/pdf' }),
-      atsScore: 85,
-      jobUrl: [''],
-      jobDescription: ['']
-    },
-    {
-      name: 'Jane_Smith_CV.docx',
-      jobTitle: 'Frontend Developer',
-      company: 'WebWorks',
-      file: new File([], 'Jane_Smith_CV.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
-      atsScore: 78,
-      jobUrl: [''],
-      jobDescription: ['']
-    },
-    {
-      name: 'Alex_Brown_Profile.doc',
-      jobTitle: 'Project Manager',
-      company: 'BuildIt',
-      file: new File([], 'Alex_Brown_Profile.doc', { type: 'application/msword' }),
-      atsScore: 90,
-      jobUrl: [''],
-      jobDescription: ['']
-    }
-  ];
+  existingResumes: any[] = [];
+
+  uploadedResumes: UploadedResume[] = [];
 
   displayedColumns: string[] = ['name', 'jobTitle', 'company', 'atsScore', 'actions'];
 
@@ -90,21 +67,60 @@ export class JobSeekerComponent {
   eventSourceSubscription: any;
   eventSourceService: any;
 
-  constructor(private dialog: MatDialog, private resumeEnhancement: ResumeEnhancementService, private fb: FormBuilder) {
+  constructor(private dialog: MatDialog,
+     private resumeEnhancement: ResumeEnhancementService,
+      private fb: FormBuilder,
+       private router: Router,
+      private loader:LoadingService) {
     this.jobForm = this.fb.group({
       jobTitle: ['', Validators.required],
       company: ['', Validators.required],
       jobUrl: [''],
-      jobDescription: [''],
-      file: ['']
+      jobDescription: ['', Validators.required],
+      file: [''],
+      existingResume: ['']
+    },
+      { validators: this.resumeChoiceValidator });
+
+    // Listen for changes to file and existingResume
+    this.jobForm.get('file')?.valueChanges.subscribe(val => {
+      if (val) {
+        this.jobForm.get('existingResume')?.setValue('');
+      }
     });
+    this.jobForm.get('existingResume')?.valueChanges.subscribe(val => {
+      if (val) {
+        this.jobForm.get('file')?.setValue('');
+      }
+    });
+
+    this.resumeEnhancement.getExistingResumes().subscribe(res => {
+      console.log(res);
+      this.existingResumes = res
+    })
+  }
+
+  /**
+   * Custom validator: Either file or existingResume must be selected, but not both, and at least one is required
+   */
+  resumeChoiceValidator(form: FormGroup) {
+    const file = form.get('file')?.value;
+    const existingResume = form.get('existingResume')?.value;
+    if ((!file && !existingResume) || (file && existingResume)) {
+      return { resumeChoice: true };
+    }
+    return null;
+
+
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
     this.fileError = '';
-    Array.from(input.files).forEach(file => {
+    // Only allow one file for this logic (if you want multiple, adjust accordingly)
+    const file = input.files[0];
+    if (file) {
       const allowedTypes = [
         'application/pdf',
         'application/msword',
@@ -114,24 +130,19 @@ export class JobSeekerComponent {
         this.fileError = 'Only PDF, DOC, or DOCX files are allowed.';
         return;
       }
-      this.uploadedResumes.push({
-        name: file.name,
-        jobTitle: this.jobForm.value.jobTitle,
-        company: this.jobForm.value.company,
-        file: file,
-        jobUrl: [''],
-        jobDescription: ['']
-      });
-    });
+      this.jobForm.get('file')?.setValue(file);
+      // Clear existingResume if file is selected
+      this.jobForm.get('existingResume')?.setValue('');
+    }
     input.value = '';
   }
 
   onSubmit(): void {
     this.submitted = true;
     if (this.jobForm.invalid) return;
-
     const uploadedResume: UploadedResume = this.jobForm.value;
-    this.startEnhancement(uploadedResume)
+    const user = JSON.parse(getLocalStorage('user') as any)
+    this.startEnhancement(uploadedResume, user);
   }
 
   openResumeDialog(resume: UploadedResume) {
@@ -153,7 +164,7 @@ export class JobSeekerComponent {
     });
   }
 
-  startEnhancement(resume: UploadedResume) {
+  startEnhancement(resume: UploadedResume, user: any) {
     const jobTitle = resume.jobTitle;
     const company = resume.company;
     const userId = 1; // Replace with actual logged-in user ID
@@ -166,37 +177,91 @@ export class JobSeekerComponent {
     const params = new URLSearchParams({
       jobTitle,
       company,
-      userId: '1',
+      userId: JSON.parse(getLocalStorage('user') as any)?.id,
       rawJd,
-      s3Key: 'resume/6963d3fe-4736-48ab-b503-d60cb567f9e3.docx'
+       token: getLocalStorage('token') as any,
+      s3Key: resume.existingResume
     });
+    if (resume.file) {
+      this.loader.show('Uploading');
+      this.resumeEnhancement.uploadRawFile(resume.file, user.id).subscribe((res: any) => {
+        const params = new URLSearchParams({
+          jobTitle,
+          company,
+          userId: JSON.parse(getLocalStorage('user') as any)?.id,
+          token: getLocalStorage('token') as any,
+          rawJd,
+          s3Key: res.data,
+         
+        });
+        this.startEventListerner(params);
+      })
+      return
+    }
+
+    this.startEventListerner(params);
+  }
+
+  startEventListerner(params: any) {
     // If you want to send the file name as well (not the file itself):
 
     // Listen to SSE with all params in the URL
-    const eventUrl = `${this.apiUrl}?${params.toString()}`
-    const options = { withCredentials: true };
+    const eventUrl = `${environment.apiUrl}resume/enhance?${params.toString()}`
+    const options = {};
     const eventNames = ResumeEventTypes;
     let aiRawText = '';
 
     this.eventSourceSubscription = this.resumeEnhancement.connectToServerSentEvents(eventUrl, eventNames, options,)
       .subscribe({
         next: (event) => {
-
-          if (event.data.type == 'AI_RAW_STREAM') {
-         aiRawText=   aiRawText.concat(event.data.message);
-          }
-          if (event.data.type == 'COMPLETE') {
-            console.log('Raw text : ', aiRawText);
-            let parsedObj = JSON.parse(aiRawText.replace('```json','').replace('```Streaming complete.',''));
-             console.log('parsed Obj : ', parsedObj);
+          // Show loading message based on event type
+          switch (event.data.type) {
+            case 'UPLOAD_START':
+              this.loader.show('Uploading your resume...');
+              break;
+            case 'UPLOAD_SUCCESS':
+              this.loader.show('Upload successful. Parsing your resume...');
+        
+               this.loader.show('AI is Analyzing your resume...');
+              break;
+            case 'PARSING_BLOCKS':
+              this.loader.show('Parsing resume blocks...');
+              break;
+            case 'BLOCK_ENHANCED':
+              this.loader.show('Enhancing resume content...');
+              break;
+            case 'AI_RAW_STREAM':
+              this.loader.show('AI is generating your enhanced resume...');
+              aiRawText = aiRawText.concat(event.data.message);
+              break;
+            case 'AI_RESPONSE_RECEIVED':
+              this.loader.show('AI response received. Finalizing...');
+              break;
+            case 'COMPLETE':
+              this.loader.show('Enhancement complete! Redirecting...');
+              this.loader.hideAll();
+              console.log('complegte event : ', event.data);
+              let parsedObj = JSON.parse(aiRawText.replace('```json', '').replace('```Streaming complete.', ''));
+              console.log('parsed Obj : ', parsedObj);
+              this.resumeEnhancement.aiResponseObj = parsedObj;
+              this.router.navigate(['main/resume'], { queryParams: { resumeId: event.data.message } })
+              break;
+            case 'ERROR':
+              this.loader.show('An error occurred during enhancement.');
+              break;
+            default:
+              this.loader.show('Processing...');
           }
         },
         error: (error: any) => {
+          this.loader.show('An error occurred.');
           console.log('Error : ', error);
         }
       }
       );
   }
+
+
 
 
 }
