@@ -1,59 +1,93 @@
-# ResumeMatcher
+# 🎯 Resume Matcher AI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.15.
+An AI-powered resume enhancer that matches your resume with job descriptions using Google's Gemini AI (Vertex AI).  
+Tailors resumes with keyword suggestions and optimizations to help you get past ATS filters.
 
-## Development server
+---
 
-To start a local development server, run:
+## ✨ Core Feature
 
-```bash
-ng serve
-```
+> ✅ **Upload your resume** and **paste a job description** — this app will enhance your resume in real-time with relevant **skills and keywords** using AI to help it stand out.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## 🛠️ Tech Stack
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+| Component              | Technology                         |
+|------------------------|------------------------------------|
+| Frontend               | Angular                            |
+| Backend                | Spring Boot                        |
+| AI                     | Vertex AI Gemini (Free Tier)       |
+| Database               | Supabase (PostgreSQL)              |
+| File Storage           | AWS S3                             |
+| Auth                   | Google OAuth2                      |
+| Deployment             | Jenkins (Triggered via Git SCM)    |
+| Hosting                | GCP VM (Ubuntu)                    |
+| Streaming              | Server-Sent Events (SSE) for live Gemini responses |
 
-```bash
-ng generate component component-name
-```
+---
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🚀 Live App
 
-```bash
-ng generate --help
-```
+👉 **Try the app here**: [https://resume-matcher-ai.web.app](https://resume-matcher-ai.web.app)
 
-## Building
+---
 
-To build the project run:
+## 🧪 Project Purpose
 
-```bash
-ng build
-```
+This project was started to:
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- Learn **Spring Boot**, **Cloud deployment**, and **DevOps** fundamentals
+- Experiment with **Vertex AI**, **SSE**, and **CI/CD pipelines**
+- Practice integrating **Angular frontend** with a **Java backend**
 
-## Running unit tests
+> ❗ This app is still under active development and **not yet production-grade**
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+---
 
-```bash
-ng test
-```
+## 🔐 Environment & Infrastructure
 
-## Running end-to-end tests
+- Runs on a **GCP VM instance**
+- Deployed automatically via **Jenkins** on SCM (Git) changes
+- Uses **AWS S3** for resume file storage
+- **Vertex AI Gemini** (Free Tier) for generating resume suggestions
+- Live feedback powered by **Server-Sent Events (SSE)**
+- **Google OAuth2** handles user authentication
+- **Supabase** is used as the PostgreSQL database
 
-For end-to-end (e2e) testing, run:
+---
 
-```bash
-ng e2e
-```
+## 📌 Status
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- ✅ MVP ready — Core flow works end-to-end  
+- 🛠️ Features being refined  
+- 🚀 More enhancements in progress
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 🛡️ Disclaimer
+
+- This project is in **beta**
+- May not be 100% accurate or reliable
+- The GitHub repo is **public for now** and will evolve
+- Suggestions are AI-generated and should be reviewed before submission
+
+---
+
+## 🙌 Contributing
+
+Open to contributions!  
+Feel free to fork the repo, open issues, or submit pull requests.
+
+---
+
+## 👨‍💻 Author
+
+Built with ❤️ by [Ganesh S](https://github.com/ganeshs18)  
+Learning by building. Feedback welcome!
+
+---
+
+## 📄 License
+
+[MIT License](LICENSE) — Free and open-source
