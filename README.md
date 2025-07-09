@@ -83,7 +83,7 @@ Feel free to fork the repo, open issues, or submit pull requests.
 
 ## 👨‍💻 Author
 
-Built with ❤️ by [Ganesh S](https://github.com/ganeshs18)  
+Built with ❤️ by [Ganesh S](https://www.linkedin.com/in/ganeshs18)  
 Learning by building. Feedback welcome!
 
 ---
