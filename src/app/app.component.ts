@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from './core/services/auth.service';
 import { LoadingService } from './core/services/loading.service';
+import { SecureLocalStorage } from './core/util/secure-local-storage';
 
 
 
@@ -34,17 +35,16 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    const nonAuthRoutes = ['/', '/login', '/register'];
+    const nonAuthRoutes = ['/', '/login', '/register', '/about', '/privacy-policy', '/contact'];
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const currentRoute = event.urlAfterRedirects.split('?')[0];
         const user = this.authService.isAuthenticated();
         if (!user && !nonAuthRoutes.includes(currentRoute)) {
-          localStorage.clear();
+          SecureLocalStorage.clear();
           this.router.navigate(['']);
         } else {
           this.userName = user?.name;
-          console.log(user)
         }
       }
     });
@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
   onLogout() {
     if (confirm('Are you sure you want to logout?')) {
       // Clear user session/token logic here
-      localStorage.removeItem('token');
+      SecureLocalStorage.clear();
       this.userName = '';
       // Optionally, redirect to login page
       window.location.href = '/login';

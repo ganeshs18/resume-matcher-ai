@@ -3,6 +3,7 @@ import { Observable, Subscriber } from 'rxjs';
 import { ResumeBlockDto } from '../../../doc-editor/doc-editor.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { SecureLocalStorage } from '../util/secure-local-storage';
 
 @Injectable({ providedIn: 'root' })
 export class ResumeEnhancementService {
@@ -70,7 +71,7 @@ export class ResumeEnhancementService {
   }
 
   getExistingResumes() {
-    let user: any = JSON.parse(localStorage.getItem('user') as any)
+    let user: any = JSON.parse(SecureLocalStorage.getItem('user') as any)
     return this.http.get<ResumeBlockDto[]>(`${environment.apiUrl}resume/resumes/${user.id}`)
 
   }

@@ -88,11 +88,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     handleCredentialResponse(response: any) {
         const token = response.credential;
-        console.log('JWT from Google:', token);
 
         // Send the token to your Spring Boot backend
         this.authService.loginWithToken(token).subscribe((res: any) => {
-            console.log(res)
             this.router.navigate(['main/job-seeker']);
         });
     }
@@ -102,7 +100,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
         // OR trigger popup:
         google.accounts.id.prompt((notification: any) => {
             if (notification.isNotDisplayed()) {
-                console.log('One Tap not displayed:', notification.getNotDisplayedReason());
             }
         });
     }

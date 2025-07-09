@@ -4,13 +4,15 @@
       <div class="row g-3 align-items-end">
         <div class="col-md-4">
           <label for="jobTitle" class="form-label">Job Title <span class="text-danger">*</span></label>
-          <input type="text" id="jobTitle" class="form-control" formControlName="jobTitle" required />
+          <input type="text" id="jobTitle" class="form-control" formControlName="jobTitle" required maxlength="100" />
           <div *ngIf="submitted && jobForm.get('jobTitle')?.errors?.['required']" class="text-danger small">Job Title is required.</div>
+          <div *ngIf="submitted && jobForm.get('jobTitle')?.errors?.['maxlength']" class="text-danger small">Max 100 characters allowed.</div>
         </div>
         <div class="col-md-4">
           <label for="company" class="form-label">Company <span class="text-danger">*</span></label>
-          <input type="text" id="company" class="form-control" formControlName="company" required />
+          <input type="text" id="company" class="form-control" formControlName="company" required maxlength="100" />
           <div *ngIf="submitted && jobForm.get('company')?.errors?.['required']" class="text-danger small">Company is required.</div>
+          <div *ngIf="submitted && jobForm.get('company')?.errors?.['maxlength']" class="text-danger small">Max 100 characters allowed.</div>
         </div>
         <div class="col-md-4">
           <label for="existingResume" class="form-label">Select Existing Resume</label>
@@ -33,6 +35,7 @@
             <span class="badge bg-info text-dark">Selected file: {{ jobForm.get('file')?.value?.name }}</span>
           </div>
           <div *ngIf="fileError" class="text-danger small">{{ fileError }}</div>
+          <div *ngIf="jobForm.get('file')?.value && jobForm.get('file')?.value.size > 5242880" class="text-danger small">File size must be less than 5MB.</div>
           <div *ngIf="submitted && jobForm.hasError('resumeChoice') && !jobForm.get('file')?.value" class="text-danger small">
             Please upload a file or select an existing resume.
           </div>
@@ -41,8 +44,9 @@
       <div class="row mt-3">
         <div class="col-12">
           <label for="jobDescription" class="form-label">Job Description <span class="text-danger">*</span></label>
-          <textarea id="jobDescription" class="form-control" formControlName="jobDescription" rows="2"></textarea>
+          <textarea id="jobDescription" class="form-control" formControlName="jobDescription" rows="2" maxlength="2000"></textarea>
            <div *ngIf="submitted && jobForm.get('jobDescription')?.errors?.['required']" class="text-danger small">Job Description is required.</div>
+           <div *ngIf="submitted && jobForm.get('jobDescription')?.errors?.['maxlength']" class="text-danger small">Max 2000 characters allowed.</div>
         </div>
       </div>
       <div class="row mt-3">

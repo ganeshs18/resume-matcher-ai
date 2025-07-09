@@ -1,0 +1,46 @@
+<div class="mb-1 text-start mx-2" >
+    <a routerLink="/" class="btn btn-outline-primary btn-sm"><mat-icon
+            style="vertical-align: middle;">arrow_back</mat-icon> Back Home</a>
+</div>
+<div class="container py-5">
+
+    <div class="row justify-content-center align-items-start flex-wrap g-4">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="d-flex flex-row flex-wrap justify-content-center align-items-stretch">
+                <div [ngSwitch]="pageType" class="w-100">
+
+                    <div *ngSwitchCase="'about'"
+                        class="text-center p-4 border rounded bg-white shadow-sm mx-2 my-2 flex-fill">
+                        <h2>📄 About</h2>
+                        <p>Resume Matcher AI helps you enhance your resume using AI.<br>
+                            Get real-time, ATS-friendly suggestions by simply uploading your resume and pasting a job
+                            description.<br>
+                            Free, fast, and built with Angular + Spring Boot + Vertex AI.</p>
+                    </div>
+                    <div *ngSwitchCase="'contact'"
+                        class="text-center p-4 border rounded bg-white shadow-sm mx-2 my-2 flex-fill">
+                        <h2>📬 Contact</h2>
+                        <p>Have questions or feedback?</p>
+                        <p>📧 Email: <a href="mailto:ganeshsundar46@gmail.com">support&#64;resumematcher.ai</a></p>
+                        <p>🐛 <a href="https://github.com/ganeshs18/resume-matcher-ai" target="_blank">GitHub: Report
+                                Issues</a></p>
+                        <p>🔗 <a href="https://www.linkedin.com/in/ganeshs18/" target="_blank">LinkedIn: Ganesh
+                                S</a></p>
+                    </div>
+                    <div *ngSwitchCase="'privacy-policy'"
+                        class="text-center p-4 border rounded bg-white shadow-sm mx-2 my-2 flex-fill">
+                        <h2>🔒 Privacy Policy</h2>
+                        <p>We don’t store your resume or job description.</p>
+                        <p>No personal data is collected or shared.</p>
+                        <p>All files are processed securely and deleted after use.</p>
+                        <p>100% private, secure, and free for job seekers.</p>
+                    </div>
+                    <div *ngSwitchDefault class="text-center p-4 border rounded bg-white shadow-sm mx-2 my-2 flex-fill">
+                        <h2>Welcome</h2>
+                        <p>This page provides information about our platform.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

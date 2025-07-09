@@ -62,8 +62,6 @@ export class DocEditorComponent implements OnInit, OnDestroy {
     this.resumeService.loadResumeBlocks(this.activatedRouter.snapshot.queryParams['resumeId']).subscribe(blocks => {
       this.blocksFromDB = blocks;
       this.html = this.convertResumeBlocksToHtml(blocks);
-      console.log(this.html)
-      console.log('ai Response : ',this.resumeService.aiResponseObj);
       this.saveBlockTexts();
     });
   }

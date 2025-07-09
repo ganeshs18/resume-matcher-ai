@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { getLocalStorage, setLocalStorage } from '../util/local-storage';
+import { SecureLocalStorage } from '../util/secure-local-storage';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -16,8 +16,8 @@ export class AuthService {
     return this.http.post(environment.apiUrl + 'auth/login', data).pipe(
       tap((res: any) => {
         if (res && res.data) {
-          setLocalStorage('token', res.data.token);
-          setLocalStorage('user', JSON.stringify(res.data.user));
+          SecureLocalStorage.setItem('token', res.data.token);
+          SecureLocalStorage.setItem('user', JSON.stringify(res.data.user));
         }
       })
     );
@@ -27,8 +27,8 @@ export class AuthService {
     return this.http.post(environment.apiUrl + 'auth/signup', data).pipe(
       tap((res: any) => {
         if (res && res.data) {
-          setLocalStorage('token', res.data.token);
-          setLocalStorage('user', JSON.stringify(res.data.user));
+          SecureLocalStorage.setItem('token', res.data.token);
+          SecureLocalStorage.setItem('user', JSON.stringify(res.data.user));
         }
       })
     );
@@ -39,14 +39,14 @@ export class AuthService {
   loginWithToken(token: string) {
     return this.http.post(environment.apiUrl + 'auth/google', { token }).pipe(tap((res: any) => {
 
-      setLocalStorage('token', res.token);
-      setLocalStorage('user', JSON.stringify(res.user));
+      SecureLocalStorage.setItem('token', res.token);
+      SecureLocalStorage.setItem('user', JSON.stringify(res.user));
     }))
   }
 
   isAuthenticated() {
-    if (!!getLocalStorage('token') && !!getLocalStorage('user')) {
-      return JSON.parse(getLocalStorage('user') as any)
+    if (!!SecureLocalStorage.getItem('token') && !!SecureLocalStorage.getItem('user')) {
+      return JSON.parse(SecureLocalStorage.getItem('user') || '')
     }
   }
 }

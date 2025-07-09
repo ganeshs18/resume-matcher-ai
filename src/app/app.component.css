@@ -37,3 +37,59 @@
   color: #6366f1 !important;
   vertical-align: middle;
 }
+
+ .footer {
+    max-width: 1100px;
+    margin: 3.5rem auto 1.5rem auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.2em;
+    font-size: 1.01rem;
+    color: var(--text-muted);
+    padding: 0 1.2em;
+  }
+  .footer .footer-links {
+    display: flex;
+    gap: 1.2em;
+    align-items: center;
+  }
+  .footer .footer-badge {
+    background: #e0e7ff;
+    color: var(--primary);
+    border-radius: 1em;
+    padding: 0.4em 1.2em;
+    font-weight: 600;
+    font-size: 0.98rem;
+    margin-right: 0.7em;
+  }
+  @media (max-width: 900px) {
+    .hero, .how-section, .features-section, .footer {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 2rem;
+    }
+    .hero {
+      padding: 2.2rem 0 1.5rem 0;
+    }
+    .how-section, .features-section {
+      padding: 2rem 0.5rem 1.5rem 0.5rem;
+    }
+  }
+  @media (max-width: 600px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+    .hero-content, .hero-visual {
+      min-width: 0;
+      max-width: 100%;
+    }
+    .ai-preview {
+      padding: 1.2rem 0.5rem 1rem 0.5rem;
+      min-height: 180px;
+    }
+    .how-section, .features-section, .cta-banner, .footer {
+      padding: 1.2rem 0.2rem 1rem 0.2rem;
+    }
+  }

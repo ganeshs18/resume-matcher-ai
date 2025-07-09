@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ResumeEnhancementService } from '../core/services/resume-enhancement.service';
 import { Observable, Subscriber } from 'rxjs';
-import { getLocalStorage } from '../core/util/local-storage';
+import { SecureLocalStorage } from '../core/util/secure-local-storage';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { LoadingService } from '../core/services/loading.service';
@@ -73,10 +73,10 @@ export class JobSeekerComponent {
        private router: Router,
       private loader:LoadingService) {
     this.jobForm = this.fb.group({
-      jobTitle: ['', Validators.required],
-      company: ['', Validators.required],
+      jobTitle: ['', [Validators.required, Validators.maxLength(100)]],
+      company: ['', [Validators.required, Validators.maxLength(100)]],
       jobUrl: [''],
-      jobDescription: ['', Validators.required],
+      jobDescription: ['', [Validators.required, Validators.maxLength(3000)]],
       file: [''],
       existingResume: ['']
     },
@@ -95,7 +95,6 @@ export class JobSeekerComponent {
     });
 
     this.resumeEnhancement.getExistingResumes().subscribe(res => {
-      console.log(res);
       this.existingResumes = res
     })
   }
@@ -130,6 +129,10 @@ export class JobSeekerComponent {
         this.fileError = 'Only PDF, DOC, or DOCX files are allowed.';
         return;
       }
+      if (file.size > 5 * 1024 * 1024) { // 5MB
+        this.fileError = 'File size must be less than 5MB.';
+        return;
+      }
       this.jobForm.get('file')?.setValue(file);
       // Clear existingResume if file is selected
       this.jobForm.get('existingResume')?.setValue('');
@@ -141,7 +144,7 @@ export class JobSeekerComponent {
     this.submitted = true;
     if (this.jobForm.invalid) return;
     const uploadedResume: UploadedResume = this.jobForm.value;
-    const user = JSON.parse(getLocalStorage('user') as any)
+    const user = JSON.parse(SecureLocalStorage.getItem('user') as any)
     this.startEnhancement(uploadedResume, user);
   }
 
@@ -177,9 +180,9 @@ export class JobSeekerComponent {
     const params = new URLSearchParams({
       jobTitle,
       company,
-      userId: JSON.parse(getLocalStorage('user') as any)?.id,
+      userId: JSON.parse(SecureLocalStorage.getItem('user') as any)?.id,
       rawJd,
-       token: getLocalStorage('token') as any,
+      token: SecureLocalStorage.getItem('token') as any,
       s3Key: resume.existingResume
     });
     if (resume.file) {
@@ -188,11 +191,10 @@ export class JobSeekerComponent {
         const params = new URLSearchParams({
           jobTitle,
           company,
-          userId: JSON.parse(getLocalStorage('user') as any)?.id,
-          token: getLocalStorage('token') as any,
+          userId: JSON.parse(SecureLocalStorage.getItem('user') as any)?.id,
+          token: SecureLocalStorage.getItem('token') as any,
           rawJd,
           s3Key: res.data,
-         
         });
         this.startEventListerner(params);
       })
@@ -240,9 +242,7 @@ export class JobSeekerComponent {
             case 'COMPLETE':
               this.loader.show('Enhancement complete! Redirecting...');
               this.loader.hideAll();
-              console.log('complegte event : ', event.data);
               let parsedObj = JSON.parse(aiRawText.replace('```json', '').replace('```Streaming complete.', ''));
-              console.log('parsed Obj : ', parsedObj);
               this.resumeEnhancement.aiResponseObj = parsedObj;
               this.router.navigate(['main/resume'], { queryParams: { resumeId: event.data.message } })
               break;
@@ -255,7 +255,6 @@ export class JobSeekerComponent {
         },
         error: (error: any) => {
           this.loader.show('An error occurred.');
-          console.log('Error : ', error);
         }
       }
       );

@@ -77,11 +77,9 @@ export class RegisterComponent implements AfterViewInit {
 
   handleCredentialResponse(response: any) {
     const token = response.credential;
-    console.log('JWT from Google:', token);
 
     // Send the token to your Spring Boot backend
     this.auth.loginWithToken(token).subscribe((res: any) => {
-      console.log(res)
       this.router.navigate(['main/job-seeker']);
     });
   }
@@ -91,7 +89,6 @@ export class RegisterComponent implements AfterViewInit {
     // OR trigger popup:
     google.accounts.id.prompt((notification: any) => {
       if (notification.isNotDisplayed()) {
-        console.log('One Tap not displayed:', notification.getNotDisplayedReason());
       }
     });
   }
