@@ -74,6 +74,16 @@ This project was started to:
 
 ---
 
+## 📦 GitHub Repositories
+
+- 🔹 **Frontend (Angular)**  
+  [https://github.com/ganeshs18/resume-matcher-ai](https://github.com/ganeshs18/resume-matcher-ai)
+
+- 🔹 **Backend (Spring Boot)**  
+  [https://github.com/ganeshs18/resume-matcher-service](https://github.com/ganeshs18/resume-matcher-service)
+
+---
+
 ## 🙌 Contributing
 
 Open to contributions!  
